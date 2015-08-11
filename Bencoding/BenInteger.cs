@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.IO;
+using System.Text;
 
 namespace BitTorrent.Bencoding
 {
@@ -20,6 +21,15 @@ namespace BitTorrent.Bencoding
                 value = value * 10 + (ps.ReadByte().Value - '0');
 
             ps.ReadByte();
+        }
+        public override void Encode(Stream stream)
+        {
+            stream.WriteByte((byte)'i');
+
+            var buffer = Encoding.ASCII.GetBytes(value.ToString());
+            stream.Write(buffer, 0, buffer.Length);
+
+            stream.WriteByte((byte)'e');
         }
     }
 }

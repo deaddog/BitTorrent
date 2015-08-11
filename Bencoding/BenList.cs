@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace BitTorrent.Bencoding
 {
@@ -20,6 +20,13 @@ namespace BitTorrent.Bencoding
                 list.Add(getObject(ps));
 
             ps.ReadByte();
+        }
+        public override void Encode(Stream stream)
+        {
+            stream.WriteByte((byte)'l');
+            foreach (var k in list)
+                k.Encode(stream);
+            stream.WriteByte((byte)'e');
         }
     }
 }

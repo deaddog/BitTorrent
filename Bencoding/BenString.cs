@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 using System.Text;
 
 namespace BitTorrent.Bencoding
@@ -23,6 +23,15 @@ namespace BitTorrent.Bencoding
 
             ps.ReadByte();
             value = Encoding.UTF8.GetString(buffer);
+        }
+        public override void Encode(Stream stream)
+        {
+            var buffer = Encoding.UTF8.GetBytes(value);
+            var len = Encoding.ASCII.GetBytes(buffer.Length.ToString());
+
+            stream.Write(len, 0, len.Length);
+            stream.WriteByte((byte)':');
+            stream.Write(buffer, 0, buffer.Length);
         }
     }
 }

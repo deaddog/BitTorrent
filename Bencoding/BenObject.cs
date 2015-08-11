@@ -42,5 +42,6 @@ namespace BitTorrent.Bencoding
         }
 
         internal abstract void Decode(PeekStream ps);
+        public abstract void Encode(Stream stream);
     }
 }
