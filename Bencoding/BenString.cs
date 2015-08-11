@@ -6,14 +6,16 @@ namespace BitTorrent.Bencoding
 {
     public class BenString : BenObject, IEquatable<BenString>
     {
-        private string value;
+        private byte[] value;
+        private string str;
 
         public BenString()
         {
             value = null;
         }
 
-        public string Value => value;
+        public byte[] Bytes => value;
+        public string String => str;
 
         internal override void Decode(PeekStream ps)
         {
@@ -21,20 +23,19 @@ namespace BitTorrent.Bencoding
             while (!ps.PeekIs(':'))
                 len = len * 10 + (ps.ReadByte().Value - '0');
 
-            byte[] buffer = new byte[len];
-            ps.ReadBytes(buffer, 0, len);
+            value = new byte[len];
+            ps.ReadBytes(value, 0, len);
 
             ps.ReadByte();
-            value = Encoding.UTF8.GetString(buffer);
+            str = Encoding.UTF8.GetString(value);
         }
         public override void Encode(Stream stream)
         {
-            var buffer = Encoding.UTF8.GetBytes(value);
-            var len = Encoding.ASCII.GetBytes(buffer.Length.ToString());
+            var len = Encoding.ASCII.GetBytes(value.Length.ToString());
 
             stream.Write(len, 0, len.Length);
             stream.WriteByte((byte)':');
-            stream.Write(buffer, 0, buffer.Length);
+            stream.Write(value, 0, value.Length);
         }
 
         public override bool Equals(BenObject other)

@@ -18,7 +18,7 @@ namespace BitTorrent.Bencoding
             get
             {
                 for (int i = 0; i < dict.Count; i++)
-                    if (dict[i].Item1.Value == key)
+                    if (dict[i].Item1.String == key)
                         return dict[i].Item2;
 
                 throw new KeyNotFoundException($"The key \"{key}\" was not found in the {nameof(BenDictionary)}.");
