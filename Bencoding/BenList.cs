@@ -50,5 +50,7 @@ namespace BitTorrent.Bencoding
 
             return true;
         }
+
+        public override string ToString() => $"{nameof(BenList)}: {{Count: {list.Count}}}";
     }
 }

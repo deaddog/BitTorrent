@@ -63,5 +63,7 @@ namespace BitTorrent.Bencoding
 
             return true;
         }
+
+        public override string ToString() => $"{nameof(BenDictionary)}: {{Count: {dict.Count}}}";
     }
 }

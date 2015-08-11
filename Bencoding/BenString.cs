@@ -49,5 +49,7 @@ namespace BitTorrent.Bencoding
         {
             return value.Equals(other.value);
         }
+
+        public override string ToString() => $"{nameof(BenString)}: {{{value.Length}:{str}}}";
     }
 }
