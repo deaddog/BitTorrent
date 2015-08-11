@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BitTorrent
@@ -13,6 +14,18 @@ namespace BitTorrent
             get { return hash; }
         }
 
+        public TorrentHash(byte[] hash)
+        {
+            if (hash.Length != 20)
+                throw new ArgumentException("Torrent hash must be exactly 20 bytes.", nameof(hash));
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var s in hash)
+                sb.Append(s.ToString("X"));
+
+            this.hash = sb.ToString();
+        }
         public TorrentHash(string hash)
         {
             hash = hash.ToLower();
