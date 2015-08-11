@@ -40,6 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bencoding\BenDictionary.cs" />
+    <Compile Include="Bencoding\BenInteger.cs" />
+    <Compile Include="Bencoding\BenList.cs" />
+    <Compile Include="Bencoding\BenObject.cs" />
+    <Compile Include="Bencoding\BenString.cs" />
+    <Compile Include="Bencoding\PeekStream.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TorrentHash.cs" />
   </ItemGroup>
