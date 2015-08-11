@@ -13,6 +13,8 @@ namespace BitTorrent.Bencoding
             value = null;
         }
 
+        public string Value => value;
+
         internal override void Decode(PeekStream ps)
         {
             int len = 0;

@@ -13,6 +13,8 @@ namespace BitTorrent.Bencoding
             this.list = new List<BenObject>();
         }
 
+        public BenObject this[int index] => list[index];
+
         internal override void Decode(PeekStream ps)
         {
             ps.ReadByte();

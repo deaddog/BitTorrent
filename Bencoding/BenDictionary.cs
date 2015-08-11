@@ -13,6 +13,18 @@ namespace BitTorrent.Bencoding
             this.dict = new List<Tuple<BenString, BenObject>>();
         }
 
+        public BenObject this[string key]
+        {
+            get
+            {
+                for (int i = 0; i < dict.Count; i++)
+                    if (dict[i].Item1.Value == key)
+                        return dict[i].Item2;
+
+                throw new KeyNotFoundException($"The key \"{key}\" was not found in the {nameof(BenDictionary)}.");
+            }
+        }
+
         internal override void Decode(PeekStream ps)
         {
             ps.ReadByte();
