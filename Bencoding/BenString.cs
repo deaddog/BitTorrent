@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace BitTorrent.Bencoding
 {
-    public class BenString : BenObject
+    public class BenString : BenObject, IEquatable<BenString>
     {
         private string value;
 
@@ -32,6 +33,18 @@ namespace BitTorrent.Bencoding
             stream.Write(len, 0, len.Length);
             stream.WriteByte((byte)':');
             stream.Write(buffer, 0, buffer.Length);
+        }
+
+        public override bool Equals(BenObject other)
+        {
+            if (other is BenString)
+                return Equals(other as BenString);
+            else
+                return false;
+        }
+        public bool Equals(BenString other)
+        {
+            return value.Equals(other.value);
         }
     }
 }

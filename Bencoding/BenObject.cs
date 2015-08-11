@@ -1,13 +1,18 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace BitTorrent.Bencoding
 {
-    public abstract class BenObject
+    public abstract class BenObject : IEquatable<BenObject>
     {
         public static BenObject FromFile(string filepath)
         {
             using (FileStream fs = new FileStream(filepath, FileMode.Open))
-                return getObject(new PeekStream(fs));
+                return FromStream(fs);
+        }
+        public static BenObject FromStream(Stream stream)
+        {
+            return getObject(new PeekStream(stream));
         }
 
         internal static BenObject getObject(PeekStream ps)
@@ -43,5 +48,14 @@ namespace BitTorrent.Bencoding
 
         internal abstract void Decode(PeekStream ps);
         public abstract void Encode(Stream stream);
+
+        public override bool Equals(object obj)
+        {
+            if (obj is BenObject)
+                return Equals(obj as BenObject);
+            else
+                return false;
+        }
+        public abstract bool Equals(BenObject other);
     }
 }

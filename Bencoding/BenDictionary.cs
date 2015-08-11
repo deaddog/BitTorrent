@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BitTorrent.Bencoding
 {
-    public class BenDictionary : BenObject
+    public class BenDictionary : BenObject, IEquatable<BenDictionary>
     {
         private List<Tuple<BenString, BenObject>> dict;
 
@@ -31,6 +31,25 @@ namespace BitTorrent.Bencoding
                 k.Item2.Encode(stream);
             }
             stream.WriteByte((byte)'e');
+        }
+
+        public override bool Equals(BenObject other)
+        {
+            if (other is BenDictionary)
+                return Equals(other as BenDictionary);
+            else
+                return false;
+        }
+        public bool Equals(BenDictionary other)
+        {
+            if (dict.Count != other.dict.Count)
+                return false;
+
+            for (int i = 0; i < dict.Count; i++)
+                if (!dict[i].Item1.Equals(other.dict[i].Item1) || !dict[i].Item2.Equals(other.dict[i].Item2))
+                    return false;
+
+            return true;
         }
     }
 }
