@@ -21,7 +21,7 @@ namespace BitTorrent.API
             private string SID;
             private string path;
 
-            public qRequestHandler(string server, int port, string username, string password)
+            public qRequestHandler(string server, ushort port, string username, string password)
                 : base($"{ensureHttp(server)}:{port}")
             {
                 this.username = HttpUtility.UrlEncode(username);
@@ -64,6 +64,13 @@ namespace BitTorrent.API
         }
 
         #endregion
+
+        private qRequestHandler req;
+
+        public qBitTorrentClient(string server, ushort port, string username, string password)
+        {
+            req = new qRequestHandler(server, port, username, password);
+        }
 
         public Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null)
         {
