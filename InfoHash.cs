@@ -49,6 +49,19 @@ namespace BitTorrent
             this.hash = hash;
         }
 
+        public static InfoHash FromStream(Stream stream)
+        {
+            var info = (BenObject.FromStream(stream) as BenDictionary)?["info"];
+
+            if (info == null) return null;
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                info.Encode(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                return new InfoHash(SHA1(ms));
+            }
+        }
         public static InfoHash FromFile(string filepath)
         {
             var info = (BenObject.FromFile(filepath) as BenDictionary)?["info"];
@@ -61,7 +74,6 @@ namespace BitTorrent
                 ms.Seek(0, SeekOrigin.Begin);
                 return new InfoHash(SHA1(ms));
             }
-
         }
         public static InfoHash FromMagnetLink(string magnetLink)
         {
