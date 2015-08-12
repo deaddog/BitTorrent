@@ -35,7 +35,7 @@ namespace BitTorrent
             StringBuilder sb = new StringBuilder();
 
             foreach (var s in hash)
-                sb.Append(s.ToString("X"));
+                sb.Append(s.ToString("x"));
 
             this.hash = sb.ToString();
         }
