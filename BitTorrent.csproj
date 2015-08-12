@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveStates.cs" />
+    <Compile Include="API\TorrentInfo.cs" />
     <Compile Include="Bencoding\BenDictionary.cs" />
     <Compile Include="Bencoding\BenInteger.cs" />
     <Compile Include="Bencoding\BenList.cs" />
@@ -48,8 +49,8 @@
     <Compile Include="Bencoding\BenString.cs" />
     <Compile Include="Bencoding\PeekStream.cs" />
     <Compile Include="DownloadStates.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InfoHash.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
