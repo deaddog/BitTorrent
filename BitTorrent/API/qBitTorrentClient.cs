@@ -1,6 +1,8 @@
 ﻿using API;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,6 +17,9 @@ namespace BitTorrent.API
         {
             private readonly string username;
             private readonly string password;
+
+            private string SID;
+            private string path;
 
             public qRequestHandler(string server, int port, string username, string password)
                 : base($"{ensureHttp(server)}:{port}")
@@ -32,6 +37,29 @@ namespace BitTorrent.API
                     return server;
                 else
                     throw new ArgumentException("Malformed server url.", nameof(server));
+            }
+
+            protected override void SignIn()
+            {
+                Dictionary<string, string[]> headers = null;
+
+                var res = RequestString("/login", RequestMethods.POST, ContentTypes.URL_Encoded, $"username={username}&password={password}", out headers);
+
+                if (res != "Ok.")
+                    throw new Exception($"qBitTorrent reponded to authentication with: \"{res}\"");
+
+                var m = Regex.Match(headers["Set-Cookie"][0], "SID=(?<sid>[^;]+); path=(?<path>.*)");
+
+                if (!m.Success)
+                    throw new Exception("Unable to parse qBitTorrent Set-Cookie header.");
+
+                SID = m.Groups["sid"].Value;
+                path = m.Groups["path"].Value;
+            }
+
+            protected override void SetCredentials(HttpWebRequest request)
+            {
+                request.Headers.Add("Cookie", $"SID={SID}");
             }
         }
 
