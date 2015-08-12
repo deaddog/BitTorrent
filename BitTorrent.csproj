@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActiveStates.cs" />
+    <Compile Include="API\IClient.cs" />
     <Compile Include="API\TorrentInfo.cs" />
     <Compile Include="Bencoding\BenDictionary.cs" />
     <Compile Include="Bencoding\BenInteger.cs" />
