@@ -7,11 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace BitTorrent
 {
-    public class TorrentHash : IEquatable<TorrentHash>
+    public class InfoHash : IEquatable<InfoHash>
     {
         static Dictionary<char, byte> base32DecodeTable;
 
-        static TorrentHash()
+        static InfoHash()
         {
             base32DecodeTable = new Dictionary<char, byte>();
             string table = "abcdefghijklmnopqrstuvwxyz234567";
@@ -27,7 +27,7 @@ namespace BitTorrent
             get { return hash; }
         }
 
-        public TorrentHash(byte[] hash)
+        public InfoHash(byte[] hash)
         {
             if (hash.Length != 20)
                 throw new ArgumentException("Torrent hash must be exactly 20 bytes.", nameof(hash));
@@ -39,7 +39,7 @@ namespace BitTorrent
 
             this.hash = sb.ToString();
         }
-        public TorrentHash(string hash)
+        public InfoHash(string hash)
         {
             hash = hash.ToLower();
 
@@ -49,7 +49,7 @@ namespace BitTorrent
             this.hash = hash;
         }
 
-        public static TorrentHash FromFile(string filepath)
+        public static InfoHash FromFile(string filepath)
         {
             var info = (BenObject.FromFile(filepath) as BenDictionary)?["info"];
 
@@ -59,11 +59,11 @@ namespace BitTorrent
             {
                 info.Encode(ms);
                 ms.Seek(0, SeekOrigin.Begin);
-                return new TorrentHash(SHA1(ms));
+                return new InfoHash(SHA1(ms));
             }
 
         }
-        public static TorrentHash FromMagnetLink(string magnetLink)
+        public static InfoHash FromMagnetLink(string magnetLink)
         {
             if (!magnetLink.StartsWith("magnet:?"))
                 throw new ArgumentException("Invalid magnet link format", nameof(magnetLink));
@@ -82,13 +82,13 @@ namespace BitTorrent
                 case 32:
                     return FromBase32(magnetLink.Substring(hashStart, 32));
                 case 40:
-                    return new TorrentHash(magnetLink.Substring(hashStart, 40));
+                    return new InfoHash(magnetLink.Substring(hashStart, 40));
                 default:
                     throw new ArgumentException("Infohash must be base32 or hex encoded.");
             }
         }
 
-        public static TorrentHash FromBase32(string infoHash)
+        public static InfoHash FromBase32(string infoHash)
         {
             if (infoHash.Length != 32)
                 throw new ArgumentException("Infohash must be a base32 encoded 32 character string");
@@ -111,7 +111,7 @@ namespace BitTorrent
                 hash[i++] = (byte)((temp[6] << 5) | temp[7]);
             }
 
-            return new TorrentHash(hash);
+            return new InfoHash(hash);
         }
 
         private static byte[] SHA1(Stream stream)
@@ -120,23 +120,23 @@ namespace BitTorrent
                 return sha1.ComputeHash(stream);
         }
 
-        public static bool operator ==(TorrentHash a, TorrentHash b)
+        public static bool operator ==(InfoHash a, InfoHash b)
         {
             return a.Equals(b);
         }
-        public static bool operator !=(TorrentHash a, TorrentHash b)
+        public static bool operator !=(InfoHash a, InfoHash b)
         {
             return !a.Equals(b);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is TorrentHash)
-                return Equals(obj as TorrentHash);
+            if (obj is InfoHash)
+                return Equals(obj as InfoHash);
             else
                 return false;
         }
-        public bool Equals(TorrentHash other)
+        public bool Equals(InfoHash other)
         {
             return hash.Equals(other.hash);
         }
