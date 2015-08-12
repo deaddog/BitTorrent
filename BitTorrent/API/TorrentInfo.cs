@@ -14,7 +14,6 @@ namespace BitTorrent.API
         public ulong Size { get; }
         public ulong Remaining { get; }
         public ulong Uploaded { get; }
-        public double Ratio => (double)(Size - Remaining) / (double)Uploaded;
 
         public TorrentInfo(InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, IEnumerable<string> labels, ulong size, ulong remaining, ulong uploaded)
         {
