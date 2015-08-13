@@ -76,11 +76,33 @@ namespace BitTorrent.API
 
         public async Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null)
         {
+            string tempPath = null;
+            if (downloadPath != null)
+            {
+                tempPath = await getPath();
+                await setPath(downloadPath);
+            }
+
             throw new NotImplementedException();
+
+            if (downloadPath != null)
+                await setPath(tempPath);
         }
         public async Task<bool> AddFromMagnet(string url, string downloadPath = null)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<string> getPath()
+        {
+            return (await req.Get<JObject>("/query/preferences")).Value<string>("save_path");
+        }
+        private async Task setPath(string path)
+        {
+            var settings = new JObject(new JProperty("save_path", path));
+            var s = "json=" + settings.ToString(Newtonsoft.Json.Formatting.None);
+
+            await req.Post<string>("/command/setPreferences", s, ContentTypes.URL_Encoded);
         }
 
         public async Task<bool> RemoveTorrent(InfoHash hash)
