@@ -90,7 +90,14 @@ namespace BitTorrent.API
             if (downloadPath != null)
                 await setPath(tempPath);
 
-            throw new NotImplementedException();
+            InfoHash hash = InfoHash.FromFile(filepath);
+
+            var files = await ListTorrents();
+            for (int i = 0; i < files.Length; i++)
+                if (files[i].Hash.Equals(hash))
+                    return true;
+
+            return false;
         }
         public async Task<bool> AddFromMagnet(string url, string downloadPath = null)
         {
