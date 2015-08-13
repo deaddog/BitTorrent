@@ -41,11 +41,11 @@ namespace BitTorrent.API
                     throw new ArgumentException("Malformed server url.", nameof(server));
             }
 
-            protected override void SignIn()
+            protected override async Task SignIn()
             {
-                var request = CreateRequest("/login", RequestMethods.POST, $"username={username}&password={password}", ContentTypes.URL_Encoded).Result;
-                var response = request.GetResponse() as HttpWebResponse;
-                var res = GetResponse<string>(response).Result;
+                var request = await CreateRequest("/login", RequestMethods.POST, $"username={username}&password={password}", ContentTypes.URL_Encoded);
+                var response = await request.GetResponseAsync() as HttpWebResponse;
+                var res = await GetResponse<string>(response);
 
                 if (res != "Ok.")
                     throw new Exception($"qBitTorrent reponded to authentication with: \"{res}\"");
