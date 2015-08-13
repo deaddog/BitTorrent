@@ -72,52 +72,52 @@ namespace BitTorrent.API
             req = new qRequestHandler(server, port, username, password);
         }
 
-        public Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null)
+        public async Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> AddFromURL(string url, string downloadPath = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> RemoveTorrent(InfoHash hash)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<TorrentInfo[]> ListTorrents()
+        public async Task<bool> AddFromURL(string url, string downloadPath = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> Move(InfoHash hash, string newpath)
+        public async Task<bool> RemoveTorrent(InfoHash hash)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<TorrentInfo[]> ListTorrents()
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
-        {
-            throw new NotImplementedException();
-        }
-        public Task<bool> SetLabelsAll(string[] labels)
+        public async Task<bool> Move(InfoHash hash, string newpath)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> SetPriority(IEnumerable<InfoHash> torrents, int priority)
+        public async Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> SetPriorityAll(int priority)
+        public async Task<bool> SetLabelsAll(string[] labels)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
+        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, int priority)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> SetStateAll(ActiveStates state)
+        public async Task<bool> SetPriorityAll(int priority)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> SetStateAll(ActiveStates state)
         {
             throw new NotImplementedException();
         }
