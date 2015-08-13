@@ -2,7 +2,9 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -83,14 +85,42 @@ namespace BitTorrent.API
                 await setPath(downloadPath);
             }
 
-            throw new NotImplementedException();
+            await uploadTorrentFile(filepath);
 
             if (downloadPath != null)
                 await setPath(tempPath);
+
+            throw new NotImplementedException();
         }
         public async Task<bool> AddFromMagnet(string url, string downloadPath = null)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task uploadTorrentFile(string filepath)
+        {
+            string boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x2");
+            byte[] boundarybytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+
+            string name = "torrents";
+            string filename = Path.GetFileName(filepath);
+            string fileheader = $"Content-Disposition: form-data; name=\"{name}\"; filename=\"{filename}\"\r\n Content-Type: application/x-bittorrent\r\n\r\n";
+
+            HttpWebRequest request = req.CreateRequest("/command/upload", RequestMethods.POST).Result;
+            request.ContentType = "multipart/form-data; boundary=" + boundary;
+            request.KeepAlive = true;
+
+            using (var reqStream = await request.GetRequestStreamAsync())
+            {
+                reqStream.Write(boundarybytes, 0, boundarybytes.Length);
+                reqStream.Write(Encoding.UTF8.GetBytes(fileheader), 0, Encoding.UTF8.GetByteCount(fileheader));
+
+                using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read))
+                    fileStream.CopyTo(reqStream);
+
+                reqStream.Write(boundarybytes, 0, boundarybytes.Length);
+            }
+            (await request.GetResponseAsync()).Dispose();
         }
 
         private async Task<string> getPath()
