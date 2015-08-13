@@ -43,14 +43,14 @@ namespace BitTorrent.API
 
             protected override void SignIn()
             {
-                Dictionary<string, string[]> headers = null;
-
-                var res = RequestString("/login", RequestMethods.POST, ContentTypes.URL_Encoded, $"username={username}&password={password}", out headers);
+                var request = CreateRequest("/login", RequestMethods.POST, $"username={username}&password={password}", ContentTypes.URL_Encoded).Result;
+                var response = request.GetResponse() as HttpWebResponse;
+                var res = GetResponse<string>(response).Result;
 
                 if (res != "Ok.")
                     throw new Exception($"qBitTorrent reponded to authentication with: \"{res}\"");
 
-                var m = Regex.Match(headers["Set-Cookie"][0], "SID=(?<sid>[^;]+); path=(?<path>.*)");
+                var m = Regex.Match(response.Headers.Get("Set-Cookie"), "SID=(?<sid>[^;]+); path=(?<path>.*)");
 
                 if (!m.Success)
                     throw new Exception("Unable to parse qBitTorrent Set-Cookie header.");
