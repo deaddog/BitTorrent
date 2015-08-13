@@ -78,7 +78,7 @@ namespace BitTorrent.API
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> AddFromURL(string url, string downloadPath = null)
+        public async Task<bool> AddFromMagnet(string url, string downloadPath = null)
         {
             throw new NotImplementedException();
         }

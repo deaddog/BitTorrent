@@ -5,7 +5,7 @@ namespace BitTorrent.API
 {
     public interface IClient
     {
-        Task<bool> AddFromURL(string url, string downloadPath = null);
+        Task<bool> AddFromMagnet(string magneturl, string downloadPath = null);
         Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null);
 
         Task<bool> RemoveTorrent(InfoHash hash);
