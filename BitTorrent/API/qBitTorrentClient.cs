@@ -26,6 +26,8 @@ namespace BitTorrent.API
             {
                 this.username = HttpUtility.UrlEncode(username);
                 this.password = HttpUtility.UrlEncode(password);
+
+                this.DefaultContentType = ContentTypes.URL_Encoded;
             }
 
             private static string ensureHttp(string server)
