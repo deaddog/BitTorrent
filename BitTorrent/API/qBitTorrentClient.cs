@@ -108,7 +108,7 @@ namespace BitTorrent.API
                 await setPath(downloadPath);
             }
 
-            throw new NotImplementedException();
+            await req.Post<string>("/command/download", $"urls={HttpUtility.UrlEncode(magneturl)}", ContentTypes.URL_Encoded);
 
             if (downloadPath != null)
                 await setPath(tempPath);
