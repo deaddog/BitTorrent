@@ -99,9 +99,28 @@ namespace BitTorrent.API
 
             return false;
         }
-        public async Task<bool> AddFromMagnet(string url, string downloadPath = null)
+        public async Task<bool> AddFromMagnet(string magneturl, string downloadPath = null)
         {
-            throw new NotImplementedException();
+            string tempPath = null;
+            if (downloadPath != null)
+            {
+                tempPath = await getPath();
+                await setPath(downloadPath);
+            }
+
+            await req.Post<string>("/command/download", $"urls={HttpUtility.UrlEncode(magneturl)}", ContentTypes.URL_Encoded);
+
+            if (downloadPath != null)
+                await setPath(tempPath);
+
+            InfoHash hash = InfoHash.FromMagnetLink(magneturl);
+
+            var files = await ListTorrents();
+            for (int i = 0; i < files.Length; i++)
+                if (files[i].Hash.Equals(hash))
+                    return true;
+
+            return false;
         }
 
         private async Task uploadTorrentFile(string filepath)
