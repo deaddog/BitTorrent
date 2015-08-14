@@ -161,7 +161,7 @@ namespace BitTorrent.API
             await req.Post<string>("/command/setPreferences", s, ContentTypes.URL_Encoded);
         }
 
-        public async Task<bool> RemoveTorrent(InfoHash hash)
+        public async Task<bool> RemoveTorrent(InfoHash hash, bool removeData)
         {
             throw new NotImplementedException();
         }
