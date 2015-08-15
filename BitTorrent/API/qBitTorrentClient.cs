@@ -8,7 +8,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
-
 namespace BitTorrent.API
 {
     public class qBitTorrentClient : IClient
@@ -167,9 +166,20 @@ namespace BitTorrent.API
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
-            throw new NotImplementedException();
-        }
+            JArray torrentInfoJsonArray = req.Request<JArray>("/query/torrents/", RequestMethods.GET).Result;
 
+
+            int torrents = torrentInfoJsonArray.Count;
+            TorrentInfo[] torrentInfoArray= new TorrentInfo[torrents];
+
+            for (int i = 0; i < torrents; i++)
+            {
+                torrentInfoArray[i] = new TorrentInfo(torrentInfoJsonArray[i]);
+            }
+
+            return torrentInfoArray;
+        }
+        
         public async Task<bool> Move(InfoHash hash, string newpath)
         {
             throw new NotImplementedException();
