@@ -4,6 +4,8 @@
     {
         Started,
         Stopped,
-        Paused
+        Checking,
+        Queued,
+        Error
     }
 }

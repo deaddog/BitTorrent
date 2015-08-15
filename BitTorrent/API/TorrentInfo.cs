@@ -27,5 +27,48 @@ namespace BitTorrent.API
             Remaining = remaining;
             Uploaded = uploaded;
         }
+
+        private static ActiveStates getActiveState(string QBstate)
+        {
+            if (QBstate == QBUPLOADING || QBstate == QBSTALLEDDL || QBstate == QBSTALLEDUP)
+                return ActiveStates.Started;
+            else if (QBstate == QBPAUSEDDL || QBstate == QBPAUSEDUP)
+                return ActiveStates.Stopped;
+            else if (QBstate == QBCHECKINGDL || QBstate == QBCHECKINGUP)
+                return ActiveStates.Checking;
+            else if (QBstate == QBERROR)
+                return ActiveStates.Error;
+            else if (QBstate == QBQUEUEDDL || QBstate == QBQUEUEDUP)
+                return ActiveStates.Queued;
+            else throw new KeyNotFoundException();
+
+        }
+
+        private static DownloadStates getDownloadstate(string QBstate)
+        {
+            if (QBstate == QBUPLOADING || QBstate == QBQUEUEDUP || QBstate == QBSTALLEDUP || QBstate == QBCHECKINGUP || QBstate == QBPAUSEDUP)
+                return DownloadStates.Seeding;
+
+            else if (QBstate == QBQUEUEDDL || QBstate == QBSTALLEDDL || QBstate == QBPAUSEDDL || QBstate == QBCHECKINGDL)
+                return DownloadStates.Downloading;
+            else if (QBstate == QBERROR)
+                return DownloadStates.Error;
+            else throw new KeyNotFoundException();
+
+        }
+
+        private static string QBERROR = "error";
+        private static string QBPAUSEDUP = "pausedUP";
+        private static string QBPAUSEDDL = "pausedDL";
+        private static string QBQUEUEDUP = "queuedUP";
+        private static string QBQUEUEDDL = "queuedDL";
+        private static string QBUPLOADING = "uploading";
+        private static string QBSTALLEDUP = "stalledUP";
+        private static string QBCHECKINGUP = "checkingUP";
+        private static string QBCHECKINGDL = "checkingDL";
+        private static string QBDOWNLOADING = "downloading";
+        private static string QBSTALLEDDL = "stalledDL";
     }
 }
+
+
