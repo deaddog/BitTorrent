@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace BitTorrent.API
@@ -26,6 +27,21 @@ namespace BitTorrent.API
             Size = size;
             Remaining = remaining;
             Uploaded = uploaded;
+        }
+
+        public TorrentInfo(JToken torrent) :
+            this(
+                new InfoHash(torrent["hash"].Value<string>()),
+                torrent["name"].Value<string>(),
+                torrent["priority"].Value<int>(),
+                getActiveState(torrent["state"].Value<string>()),
+                getDownloadstate(torrent["state"].Value<string>()),
+                torrent["label"].Value<string>(),
+                torrent["size"].Value<ulong>(),
+                0, //remaining - only exists in generic torrent properties
+                0) //uploaded - only exists in generic torrent properties
+        {
+
         }
 
         private static ActiveStates getActiveState(string QBstate)
