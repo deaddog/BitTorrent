@@ -176,15 +176,24 @@ namespace BitTorrent.API
             {
                 var torrent = torrentInfoJsonArray[i];
 
+                ulong size = torrent.Value<ulong>("size");
+                double ratio = torrent.Value<double>("ratio");
+                double progress = torrent.Value<double>("progress");
+
+                ulong downloaded = progress == 0 ? 0 : (progress == 1.0 ? size : (ulong)(size * progress));
+                ulong remaining = size - downloaded;
+
+                ulong uploaded = (ulong)(downloaded * ratio);
+
                 torrentInfoArray[i] = new TorrentInfo(new InfoHash(torrent.Value<string>("hash")),
                   torrent.Value<string>("name"),
                   torrent.Value<int>("priority"),
                   getActiveState(torrent.Value<string>("state")),
                   getDownloadstate(torrent.Value<string>("state")),
                   new string[] { torrent.Value<string>("label") },
-                  torrent.Value<ulong>("size"),
-                  0, //remaining - only exists in generic torrent properties
-                  0); //uploaded - only exists in generic torrent properties
+                  size,
+                  remaining,
+                  uploaded);
             }
 
             return torrentInfoArray;
