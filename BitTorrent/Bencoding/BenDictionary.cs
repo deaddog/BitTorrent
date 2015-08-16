@@ -6,6 +6,8 @@ namespace BitTorrent.Bencoding
 {
     public class BenDictionary : BenObject, IEquatable<BenDictionary>
     {
+        // The dictionary uses a List internally to ensure that the add-order is preserved.
+        // This is required to generate InfoHash for most clients.
         private List<Tuple<BenString, BenObject>> dict;
 
         public BenDictionary()
