@@ -201,31 +201,44 @@ namespace BitTorrent.API
 
         private static ActiveStates getActiveState(string QBstate)
         {
-            if (QBstate == QBUPLOADING || QBstate == QBSTALLEDDL || QBstate == QBSTALLEDUP)
-                return ActiveStates.Started;
-            else if (QBstate == QBPAUSEDDL || QBstate == QBPAUSEDUP)
-                return ActiveStates.Stopped;
-            else if (QBstate == QBCHECKINGDL || QBstate == QBCHECKINGUP)
-                return ActiveStates.Checking;
-            else if (QBstate == QBERROR)
-                return ActiveStates.Error;
-            else if (QBstate == QBQUEUEDDL || QBstate == QBQUEUEDUP)
-                return ActiveStates.Queued;
-            else throw new KeyNotFoundException();
+            switch (QBstate)
+            {
+                case "error": return ActiveStates.Stopped;
+                case "pausedUP": return ActiveStates.Stopped;
+                case "pausedDL": return ActiveStates.Stopped;
+                case "queuedUP": return ActiveStates.Started;
+                case "queuedDL": return ActiveStates.Started;
+                case "uploading": return ActiveStates.Started;
+                case "stalledUP": return ActiveStates.Started;
+                case "checkingUP": return ActiveStates.Started;
+                case "checkingDL": return ActiveStates.Started;
+                case "downloading": return ActiveStates.Started;
+                case "stalledDL": return ActiveStates.Started;
 
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
+            }
         }
 
         private static DownloadStates getDownloadstate(string QBstate)
         {
-            if (QBstate == QBUPLOADING || QBstate == QBQUEUEDUP || QBstate == QBSTALLEDUP || QBstate == QBCHECKINGUP || QBstate == QBPAUSEDUP)
-                return DownloadStates.Seeding;
+            switch (QBstate)
+            {
+                case "error": return DownloadStates.Error;
+                case "pausedUP": return DownloadStates.Seeding;
+                case "pausedDL": return DownloadStates.Downloading;
+                case "queuedUP": return DownloadStates.Queued | DownloadStates.Seeding;
+                case "queuedDL": return DownloadStates.Queued | DownloadStates.Downloading;
+                case "uploading": return DownloadStates.Seeding;
+                case "stalledUP": return DownloadStates.Seeding;
+                case "checkingUP": return DownloadStates.Checking | DownloadStates.Seeding;
+                case "checkingDL": return DownloadStates.Checking | DownloadStates.Downloading;
+                case "downloading": return DownloadStates.Downloading;
+                case "stalledDL": return DownloadStates.Seeding;
 
-            else if (QBstate == QBQUEUEDDL || QBstate == QBSTALLEDDL || QBstate == QBPAUSEDDL || QBstate == QBCHECKINGDL)
-                return DownloadStates.Downloading;
-            else if (QBstate == QBERROR)
-                return DownloadStates.Error;
-            else throw new KeyNotFoundException();
-
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
+            }
         }
 
         private static string QBERROR = "error";
