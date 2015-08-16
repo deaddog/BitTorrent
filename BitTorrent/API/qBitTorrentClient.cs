@@ -170,7 +170,7 @@ namespace BitTorrent.API
 
 
             int torrents = torrentInfoJsonArray.Count;
-            TorrentInfo[] torrentInfoArray= new TorrentInfo[torrents];
+            TorrentInfo[] torrentInfoArray = new TorrentInfo[torrents];
 
             for (int i = 0; i < torrents; i++)
             {
@@ -180,7 +180,7 @@ namespace BitTorrent.API
                   torrent["priority"].Value<int>(),
                   getActiveState(torrent["state"].Value<string>()),
                   getDownloadstate(torrent["state"].Value<string>()),
-                  torrent["label"].Value<string>(),
+                  new string[] { torrent["label"].Value<string>() },
                   torrent["size"].Value<ulong>(),
                   0, //remaining - only exists in generic torrent properties
                   0); //uploaded - only exists in generic torrent properties
@@ -188,7 +188,7 @@ namespace BitTorrent.API
 
             return torrentInfoArray;
         }
-        
+
         private static ActiveStates getActiveState(string QBstate)
         {
             if (QBstate == QBUPLOADING || QBstate == QBSTALLEDDL || QBstate == QBSTALLEDUP)

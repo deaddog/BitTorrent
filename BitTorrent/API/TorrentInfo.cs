@@ -10,19 +10,19 @@ namespace BitTorrent.API
         public int Priority { get; }
         public ActiveStates ActiveState { get; }
         public DownloadStates DownloadState { get; }
-        public string Label { get; }
+        public ReadOnlyCollection<string> Labels { get; }
         public ulong Size { get; }
         public ulong Remaining { get; }
         public ulong Uploaded { get; }
 
-        public TorrentInfo(InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, string label, ulong size, ulong remaining, ulong uploaded)
+        public TorrentInfo(InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, IEnumerable<string> labels, ulong size, ulong remaining, ulong uploaded)
         {
             Hash = hash;
             Name = name;
             Priority = priority;
             ActiveState = activestate;
             DownloadState = downloadstate;
-            Label = label;
+            Labels = new ReadOnlyCollection<string>(new List<string>(labels));
             Size = size;
             Remaining = remaining;
             Uploaded = uploaded;
