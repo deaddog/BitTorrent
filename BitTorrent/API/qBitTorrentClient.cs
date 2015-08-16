@@ -175,13 +175,14 @@ namespace BitTorrent.API
             for (int i = 0; i < torrents; i++)
             {
                 var torrent = torrentInfoJsonArray[i];
-                torrentInfoArray[i] = new TorrentInfo(new InfoHash(torrent["hash"].Value<string>()),
-                  torrent["name"].Value<string>(),
-                  torrent["priority"].Value<int>(),
-                  getActiveState(torrent["state"].Value<string>()),
-                  getDownloadstate(torrent["state"].Value<string>()),
-                  new string[] { torrent["label"].Value<string>() },
-                  torrent["size"].Value<ulong>(),
+
+                torrentInfoArray[i] = new TorrentInfo(new InfoHash(torrent.Value<string>("hash")),
+                  torrent.Value<string>("name"),
+                  torrent.Value<int>("priority"),
+                  getActiveState(torrent.Value<string>("state")),
+                  getDownloadstate(torrent.Value<string>("state")),
+                  new string[] { torrent.Value<string>("label") },
+                  torrent.Value<ulong>("size"),
                   0, //remaining - only exists in generic torrent properties
                   0); //uploaded - only exists in generic torrent properties
             }
