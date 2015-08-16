@@ -12,7 +12,7 @@ namespace BitTorrent.API
 {
     public class qBitTorrentClient : IClient
     {
-        #region
+        #region RequestHandler
 
         private class qRequestHandler : RequestHandler
         {
@@ -219,7 +219,6 @@ namespace BitTorrent.API
                     throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
             }
         }
-
         private static DownloadStates getDownloadstate(string QBstate)
         {
             switch (QBstate)
@@ -240,18 +239,6 @@ namespace BitTorrent.API
                     throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
             }
         }
-
-        private static string QBERROR = "error";
-        private static string QBPAUSEDUP = "pausedUP";
-        private static string QBPAUSEDDL = "pausedDL";
-        private static string QBQUEUEDUP = "queuedUP";
-        private static string QBQUEUEDDL = "queuedDL";
-        private static string QBUPLOADING = "uploading";
-        private static string QBSTALLEDUP = "stalledUP";
-        private static string QBCHECKINGUP = "checkingUP";
-        private static string QBCHECKINGDL = "checkingDL";
-        private static string QBDOWNLOADING = "downloading";
-        private static string QBSTALLEDDL = "stalledDL";
 
         public async Task<bool> Move(InfoHash hash, string newpath)
         {
