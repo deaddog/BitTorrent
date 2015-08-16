@@ -166,7 +166,7 @@ namespace BitTorrent.API
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
-            JArray torrentInfoJsonArray = req.Request<JArray>("/query/torrents/", RequestMethods.GET).Result;
+            JArray torrentInfoJsonArray = await req.Request<JArray>("/query/torrents/", RequestMethods.GET);
 
 
             int torrents = torrentInfoJsonArray.Count;
