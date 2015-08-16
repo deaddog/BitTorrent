@@ -12,7 +12,7 @@ namespace BitTorrent.API
 {
     public class qBitTorrentClient : IClient
     {
-        #region
+        #region RequestHandler
 
         private class qRequestHandler : RequestHandler
         {
@@ -166,20 +166,80 @@ namespace BitTorrent.API
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
-            JArray torrentInfoJsonArray = req.Request<JArray>("/query/torrents/", RequestMethods.GET).Result;
+            JArray torrentInfoJsonArray = await req.Request<JArray>("/query/torrents/", RequestMethods.GET);
 
 
             int torrents = torrentInfoJsonArray.Count;
-            TorrentInfo[] torrentInfoArray= new TorrentInfo[torrents];
+            TorrentInfo[] torrentInfoArray = new TorrentInfo[torrents];
 
             for (int i = 0; i < torrents; i++)
             {
-                torrentInfoArray[i] = new TorrentInfo(torrentInfoJsonArray[i]);
+                var torrent = torrentInfoJsonArray[i];
+
+                ulong size = torrent.Value<ulong>("size");
+                double ratio = torrent.Value<double>("ratio");
+                double progress = torrent.Value<double>("progress");
+
+                ulong downloaded = progress == 0 ? 0 : (progress == 1.0 ? size : (ulong)(size * progress));
+                ulong remaining = size - downloaded;
+
+                ulong uploaded = (ulong)(downloaded * ratio);
+
+                torrentInfoArray[i] = new TorrentInfo(new InfoHash(torrent.Value<string>("hash")),
+                  torrent.Value<string>("name"),
+                  torrent.Value<int>("priority"),
+                  getActiveState(torrent.Value<string>("state")),
+                  getDownloadstate(torrent.Value<string>("state")),
+                  new string[] { torrent.Value<string>("label") },
+                  size,
+                  remaining,
+                  uploaded);
             }
 
             return torrentInfoArray;
         }
-        
+
+        private static ActiveStates getActiveState(string QBstate)
+        {
+            switch (QBstate)
+            {
+                case "error": return ActiveStates.Stopped;
+                case "pausedUP": return ActiveStates.Stopped;
+                case "pausedDL": return ActiveStates.Stopped;
+                case "queuedUP": return ActiveStates.Started;
+                case "queuedDL": return ActiveStates.Started;
+                case "uploading": return ActiveStates.Started;
+                case "stalledUP": return ActiveStates.Started;
+                case "checkingUP": return ActiveStates.Started;
+                case "checkingDL": return ActiveStates.Started;
+                case "downloading": return ActiveStates.Started;
+                case "stalledDL": return ActiveStates.Started;
+
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
+            }
+        }
+        private static DownloadStates getDownloadstate(string QBstate)
+        {
+            switch (QBstate)
+            {
+                case "error": return DownloadStates.Error;
+                case "pausedUP": return DownloadStates.Seeding;
+                case "pausedDL": return DownloadStates.Downloading;
+                case "queuedUP": return DownloadStates.Queued | DownloadStates.Seeding;
+                case "queuedDL": return DownloadStates.Queued | DownloadStates.Downloading;
+                case "uploading": return DownloadStates.Seeding;
+                case "stalledUP": return DownloadStates.Seeding;
+                case "checkingUP": return DownloadStates.Checking | DownloadStates.Seeding;
+                case "checkingDL": return DownloadStates.Checking | DownloadStates.Downloading;
+                case "downloading": return DownloadStates.Downloading;
+                case "stalledDL": return DownloadStates.Seeding;
+
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
+            }
+        }
+
         public async Task<bool> Move(InfoHash hash, string newpath)
         {
             throw new NotImplementedException();
