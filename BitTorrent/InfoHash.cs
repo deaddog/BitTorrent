@@ -14,7 +14,7 @@ namespace BitTorrent
         static InfoHash()
         {
             base32DecodeTable = new Dictionary<char, byte>();
-            string table = "abcdefghijklmnopqrstuvwxyz234567";
+            string table = "abcdefghijklmnopqrstuvwxyz234567"; // The Base32 alphabet; see https://en.wikipedia.org/wiki/Base32#RFC_4648_Base32_alphabet
             for (int i = 0; i < table.Length; i++)
                 base32DecodeTable[table[i]] = (byte)i;
         }
