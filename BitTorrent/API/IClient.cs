@@ -11,8 +11,6 @@ namespace BitTorrent.API
         Task<bool> RemoveTorrent(InfoHash hash, bool removeData);
         Task<TorrentInfo[]> ListTorrents();
 
-        Task<bool> Move(InfoHash hash, string newpath);
-
         Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state);
         Task<bool> SetStateAll(ActiveStates state);
 

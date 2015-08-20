@@ -240,11 +240,6 @@ namespace BitTorrent.API
             }
         }
 
-        public async Task<bool> Move(InfoHash hash, string newpath)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
         {
             throw new NotImplementedException();
