@@ -287,5 +287,15 @@ namespace BitTorrent.API
         {
             throw new NotImplementedException();
         }
+
+        private string getStateUrl(ActiveStates state)
+        {
+            if (state == ActiveStates.Stopped)
+                return "/command/pause";
+            else if (state == ActiveStates.Started)
+                return "/command/resume";
+            else
+                throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
+        }
     }
 }
