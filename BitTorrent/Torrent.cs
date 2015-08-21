@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace BitTorrent
 {
     public class Torrent
     {
+        private TorrentManager manager;
+
         public InfoHash Hash { get; }
         public string Name { get; }
         public int Priority { get; }
@@ -15,8 +18,13 @@ namespace BitTorrent
         public ulong Remaining { get; }
         public ulong Uploaded { get; }
 
-        public Torrent(InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, IEnumerable<string> labels, ulong size, ulong remaining, ulong uploaded)
+        internal Torrent(TorrentManager manager, InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, IEnumerable<string> labels, ulong size, ulong remaining, ulong uploaded)
         {
+            if (manager == null)
+                throw new ArgumentNullException(nameof(manager));
+
+            this.manager = manager;
+
             Hash = hash;
             Name = name;
             Priority = priority;
