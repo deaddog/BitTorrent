@@ -212,55 +212,54 @@ namespace BitTorrent.API
         {
             switch (QBstate)
             {
-                case "error": return ActiveStates.Stopped;
-                case "pausedUP": return ActiveStates.Stopped;
-                case "pausedDL": return ActiveStates.Stopped;
-                case "queuedUP": return ActiveStates.Started;
-                case "queuedDL": return ActiveStates.Started;
-                case "uploading": return ActiveStates.Started;
-                case "stalledUP": return ActiveStates.Started;
-                case "checkingUP": return ActiveStates.Started;
-                case "checkingDL": return ActiveStates.Started;
-                case "downloading": return ActiveStates.Started;
-                case "stalledDL": return ActiveStates.Started;
+                case QBERROR: return ActiveStates.Stopped;
+                case QBPAUSEDUP: return ActiveStates.Stopped;
+                case QBPAUSEDDL: return ActiveStates.Stopped;
+                case QBQUEUEDUP: return ActiveStates.Started;
+                case QBQUEUEDDL: return ActiveStates.Started;
+                case QBUPLOADING: return ActiveStates.Started;
+                case QBSTALLEDUP: return ActiveStates.Started;
+                case QBCHECKINGUP: return ActiveStates.Started;
+                case QBCHECKINGDL: return ActiveStates.Started;
+                case QBDOWNLOADING: return ActiveStates.Started;
+                case QBSTALLEDDL: return ActiveStates.Started;
 
                 default:
                     throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
             }
         }
-
         private static DownloadStates getDownloadstate(string QBstate)
         {
             switch (QBstate)
             {
-                case "error": return DownloadStates.Error;
-                case "pausedUP": return DownloadStates.Seeding;
-                case "pausedDL": return DownloadStates.Downloading;
-                case "queuedUP": return DownloadStates.Queued | DownloadStates.Seeding;
-                case "queuedDL": return DownloadStates.Queued | DownloadStates.Downloading;
-                case "uploading": return DownloadStates.Seeding;
-                case "stalledUP": return DownloadStates.Seeding;
-                case "checkingUP": return DownloadStates.Checking | DownloadStates.Seeding;
-                case "checkingDL": return DownloadStates.Checking | DownloadStates.Downloading;
-                case "downloading": return DownloadStates.Downloading;
-                case "stalledDL": return DownloadStates.Seeding;
+                case QBERROR: return DownloadStates.Error;
+                case QBPAUSEDUP: return DownloadStates.Seeding;
+                case QBPAUSEDDL: return DownloadStates.Downloading;
+                case QBQUEUEDUP: return DownloadStates.Queued | DownloadStates.Seeding;
+                case QBQUEUEDDL: return DownloadStates.Queued | DownloadStates.Downloading;
+                case QBUPLOADING: return DownloadStates.Seeding;
+                case QBSTALLEDUP: return DownloadStates.Seeding;
+                case QBCHECKINGUP: return DownloadStates.Checking | DownloadStates.Seeding;
+                case QBCHECKINGDL: return DownloadStates.Checking | DownloadStates.Downloading;
+                case QBDOWNLOADING: return DownloadStates.Downloading;
+                case QBSTALLEDDL: return DownloadStates.Seeding;
 
                 default:
                     throw new KeyNotFoundException($@"The qBitTorrent state ""{QBstate}"" was not recognized.");
             }
         }
 
-        private static string QBERROR = "error";
-        private static string QBPAUSEDUP = "pausedUP";
-        private static string QBPAUSEDDL = "pausedDL";
-        private static string QBQUEUEDUP = "queuedUP";
-        private static string QBQUEUEDDL = "queuedDL";
-        private static string QBUPLOADING = "uploading";
-        private static string QBSTALLEDUP = "stalledUP";
-        private static string QBCHECKINGUP = "checkingUP";
-        private static string QBCHECKINGDL = "checkingDL";
-        private static string QBDOWNLOADING = "downloading";
-        private static string QBSTALLEDDL = "stalledDL";
+        private const string QBERROR = "error";
+        private const string QBPAUSEDUP = "pausedUP";
+        private const string QBPAUSEDDL = "pausedDL";
+        private const string QBQUEUEDUP = "queuedUP";
+        private const string QBQUEUEDDL = "queuedDL";
+        private const string QBUPLOADING = "uploading";
+        private const string QBSTALLEDUP = "stalledUP";
+        private const string QBCHECKINGUP = "checkingUP";
+        private const string QBCHECKINGDL = "checkingDL";
+        private const string QBDOWNLOADING = "downloading";
+        private const string QBSTALLEDDL = "stalledDL";
 
         public async Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
         {
