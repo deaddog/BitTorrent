@@ -59,6 +59,7 @@
     <Compile Include="InfoHash.cs" />
     <Compile Include="Priorities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Torrent.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API\API.csproj">
