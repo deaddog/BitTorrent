@@ -162,7 +162,16 @@ namespace BitTorrent.API
 
         public async Task<bool> RemoveTorrent(InfoHash hash, bool removeData)
         {
-            throw new NotImplementedException();
+            string url = removeData ? "/command/deletePerm" : "/command/delete";
+
+            var data = await req.Post<string>(url, "hashes=" + hash.Hash, ContentTypes.URL_Encoded);
+
+            var files = await ListTorrents();
+            for (int i = 0; i < files.Length; i++)
+                if (files[i].Hash.Equals(hash))
+                    return false;
+
+            return true;
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
