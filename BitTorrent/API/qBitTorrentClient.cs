@@ -273,9 +273,16 @@ namespace BitTorrent.API
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, int priority)
+        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, Priorities priority)
         {
-            throw new NotImplementedException();
+            string url = getPriorityUrl(priority);
+
+            foreach (InfoHash torrentHash in torrents)
+            {
+                await req.Post(url,$"hashes={torrentHash.ToString()}");
+            }
+
+            return true;
         }
         public async Task<bool> SetPriorityAll(int priority)
         {
