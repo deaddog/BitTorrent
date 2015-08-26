@@ -293,7 +293,11 @@ namespace BitTorrent.API
         
         public async Task<bool> SetStateAll(ActiveStates state)
         {
-            throw new NotImplementedException();
+            string url = getStateAllUrl(state);
+
+            var response = await req.Post<JObject>(url);
+
+            return true;
         }
 
         private string getStateUrl(ActiveStates state)
@@ -302,6 +306,16 @@ namespace BitTorrent.API
                 return "/command/pause";
             else if (state == ActiveStates.Started)
                 return "/command/resume";
+            else
+                throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
+        }
+
+        private string getStateAllUrl(ActiveStates state)
+        {
+            if (state == ActiveStates.Stopped)
+                return "/command/pauseAll";
+            else if (state == ActiveStates.Started)
+                return "/command/resumeAll";
             else
                 throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }
