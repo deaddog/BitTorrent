@@ -281,11 +281,29 @@ namespace BitTorrent.API
 
         public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
         {
-            throw new NotImplementedException();
+            foreach (InfoHash torrentHash in torrents)
+            {
+                string url = getStateUrl(state);
+
+                var response = await req.Post<JObject>(url, $"hash={torrentHash.ToString()}");
+            }
+
+            return true;
         }
+        
         public async Task<bool> SetStateAll(ActiveStates state)
         {
             throw new NotImplementedException();
+        }
+
+        private string getStateUrl(ActiveStates state)
+        {
+            if (state == ActiveStates.Stopped)
+                return "/command/pause";
+            else if (state == ActiveStates.Started)
+                return "/command/resume";
+            else
+                throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }
     }
 }
