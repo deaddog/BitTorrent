@@ -295,7 +295,7 @@ namespace BitTorrent.API
         {
             string url = getStateAllUrl(state);
 
-            var response = await req.Post<JObject>(url);
+            await req.Post(url);
 
             return true;
         }
