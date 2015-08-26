@@ -284,10 +284,15 @@ namespace BitTorrent.API
 
             return true;
         }
-        public async Task<bool> SetPriorityAll(int priority)
+        public async Task<bool> SetPriorityAll(Priorities priority)
         {
-            throw new NotImplementedException();
+            string url = getPriorityUrl(priority);
+
+            await req.Post(url);
+
+            return true;
         }
+
 
         public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
         {
