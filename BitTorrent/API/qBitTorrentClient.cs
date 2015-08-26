@@ -12,6 +12,9 @@ namespace BitTorrent.API
 {
     public class qBitTorrentClient : IClient
     {
+        public const string POSTURL = "/command/";
+
+
         #region RequestHandler
 
         private class qRequestHandler : RequestHandler
@@ -300,12 +303,38 @@ namespace BitTorrent.API
             return true;
         }
 
+
+        private string getPriorityUrl(Priorities priority)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(POSTURL);
+
+            switch (priority)
+            {
+                case Priorities.Top:
+                    sb.Append("topPrio");
+                    break;
+                case Priorities.Bottom:
+                    sb.Append("bottomPrio");
+                    break;
+                case Priorities.Increase:
+                    sb.Append("increasePrio");
+                    break;
+                case Priorities.Decrease:
+                    sb.Append("decreasePrio");
+                    break;
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent priority ""{priority}"" was not recognized.");
+                    break;
+            }
+            return sb.ToString();
+        }
         private string getStateUrl(ActiveStates state)
         {
             if (state == ActiveStates.Stopped)
-                return "/command/pause";
+                return POSTURL + "pause";
             else if (state == ActiveStates.Started)
-                return "/command/resume";
+                return POSTURL + "resume";
             else
                 throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }
