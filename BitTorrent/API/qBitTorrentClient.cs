@@ -295,7 +295,15 @@ namespace BitTorrent.API
         {
             string url = getPriorityUrl(priority);
 
-            await req.Post(url);
+            var torrents = ListTorrents().Result;
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in torrents)
+            {
+                sb.Append('|');
+                sb.Append(item.Hash.ToString());
+            }
+
+            await req.Post(url, $"hashes={sb.ToString()}");
 
             return true;
         }
@@ -312,7 +320,7 @@ namespace BitTorrent.API
 
             return true;
         }
-        
+
         public async Task<bool> SetStateAll(ActiveStates state)
         {
             string url = getStateAllUrl(state);
