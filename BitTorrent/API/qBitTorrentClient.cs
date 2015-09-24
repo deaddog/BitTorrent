@@ -291,22 +291,6 @@ namespace BitTorrent.API
 
             return true;
         }
-        public async Task<bool> SetPriorityAll(Priorities priority)
-        {
-            string url = getPriorityUrl(priority);
-
-            var torrents = ListTorrents().Result;
-            StringBuilder sb = new StringBuilder();
-            foreach (var item in torrents)
-            {
-                sb.Append('|');
-                sb.Append(item.Hash.ToString());
-            }
-
-            await req.Post(url, $"hashes={sb.ToString()}");
-
-            return true;
-        }
 
 
         public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)

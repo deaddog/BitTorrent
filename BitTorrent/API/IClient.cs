@@ -18,6 +18,5 @@ namespace BitTorrent.API
         Task<bool> SetLabelsAll(string[] labels);
 
         Task<bool> SetPriority(IEnumerable<InfoHash> torrents, Priorities priority);
-        Task<bool> SetPriorityAll(Priorities priority);
     }
 }
