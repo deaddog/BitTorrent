@@ -369,9 +369,9 @@ namespace BitTorrent.API
         private string getStateAllUrl(ActiveStates state)
         {
             if (state == ActiveStates.Stopped)
-                return "/command/pauseAll";
+                return POSTURL + "pauseAll";
             else if (state == ActiveStates.Started)
-                return "/command/resumeAll";
+                return POSTURL + "resumeAll";
             else
                 throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }
