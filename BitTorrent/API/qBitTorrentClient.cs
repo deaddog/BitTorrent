@@ -277,10 +277,17 @@ namespace BitTorrent.API
         {
             string url = getPriorityUrl(priority);
 
-            foreach (InfoHash torrentHash in torrents)
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in torrents)
             {
-                await req.Post(url,$"hashes={torrentHash.ToString()}");
+                sb.Append('|');
+                sb.Append(item.Hash.ToString());
             }
+
+            await req.Post(url, $"hashes={sb.ToString()}");
+
 
             return true;
         }
