@@ -12,6 +12,9 @@ namespace BitTorrent.API
 {
     public class qBitTorrentClient : IClient
     {
+        public const string POSTURL = "/command/";
+
+
         #region RequestHandler
 
         private class qRequestHandler : RequestHandler
@@ -270,14 +273,41 @@ namespace BitTorrent.API
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, int priority)
+        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, Priorities priority)
         {
-            throw new NotImplementedException();
+            string url = getPriorityUrl(priority);
+
+
+            StringBuilder sb = new StringBuilder();
+
+            foreach (var item in torrents)
+            {
+                sb.Append('|');
+                sb.Append(item.Hash.ToString());
+            }
+
+            await req.Post(url, $"hashes={sb.ToString()}");
+
+
+            return true;
         }
-        public async Task<bool> SetPriorityAll(int priority)
+        public async Task<bool> SetPriorityAll(Priorities priority)
         {
-            throw new NotImplementedException();
+            string url = getPriorityUrl(priority);
+
+            var torrents = ListTorrents().Result;
+            StringBuilder sb = new StringBuilder();
+            foreach (var item in torrents)
+            {
+                sb.Append('|');
+                sb.Append(item.Hash.ToString());
+            }
+
+            await req.Post(url, $"hashes={sb.ToString()}");
+
+            return true;
         }
+
 
         public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
         {
@@ -290,7 +320,7 @@ namespace BitTorrent.API
 
             return true;
         }
-        
+
         public async Task<bool> SetStateAll(ActiveStates state)
         {
             string url = getStateAllUrl(state);
@@ -300,12 +330,38 @@ namespace BitTorrent.API
             return true;
         }
 
+
+        private string getPriorityUrl(Priorities priority)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(POSTURL);
+
+            switch (priority)
+            {
+                case Priorities.Top:
+                    sb.Append("topPrio");
+                    break;
+                case Priorities.Bottom:
+                    sb.Append("bottomPrio");
+                    break;
+                case Priorities.Increase:
+                    sb.Append("increasePrio");
+                    break;
+                case Priorities.Decrease:
+                    sb.Append("decreasePrio");
+                    break;
+                default:
+                    throw new KeyNotFoundException($@"The qBitTorrent priority ""{priority}"" was not recognized.");
+                    break;
+            }
+            return sb.ToString();
+        }
         private string getStateUrl(ActiveStates state)
         {
             if (state == ActiveStates.Stopped)
-                return "/command/pause";
+                return POSTURL + "pause";
             else if (state == ActiveStates.Started)
-                return "/command/resume";
+                return POSTURL + "resume";
             else
                 throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }
@@ -313,9 +369,9 @@ namespace BitTorrent.API
         private string getStateAllUrl(ActiveStates state)
         {
             if (state == ActiveStates.Stopped)
-                return "/command/pauseAll";
+                return POSTURL + "pauseAll";
             else if (state == ActiveStates.Started)
-                return "/command/resumeAll";
+                return POSTURL + "resumeAll";
             else
                 throw new KeyNotFoundException($@"The qBitTorrent state ""{state}"" was not recognized.");
         }

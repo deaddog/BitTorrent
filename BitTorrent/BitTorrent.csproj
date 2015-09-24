@@ -57,6 +57,7 @@
     <Compile Include="Bencoding\PeekStream.cs" />
     <Compile Include="DownloadStates.cs" />
     <Compile Include="InfoHash.cs" />
+    <Compile Include="Priorities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
