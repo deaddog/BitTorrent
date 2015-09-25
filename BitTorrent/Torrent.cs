@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BitTorrent.API;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -8,32 +9,31 @@ namespace BitTorrent
     {
         private TorrentManager manager;
 
-        public InfoHash Hash { get; }
-        public string Name { get; }
-        public int Priority { get; }
-        public ActiveStates ActiveState { get; }
-        public DownloadStates DownloadState { get; }
-        public ReadOnlyCollection<string> Labels { get; }
-        public ulong Size { get; }
-        public ulong Remaining { get; }
-        public ulong Uploaded { get; }
+        private readonly InfoHash hash;
+        private TorrentInfo info;
 
-        internal Torrent(TorrentManager manager, InfoHash hash, string name, int priority, ActiveStates activestate, DownloadStates downloadstate, IEnumerable<string> labels, ulong size, ulong remaining, ulong uploaded)
+        internal Torrent(TorrentManager manager, TorrentInfo info)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            this.manager = manager;
+            if (info == null)
+                throw new ArgumentNullException(nameof(info));
 
-            Hash = hash;
-            Name = name;
-            Priority = priority;
-            ActiveState = activestate;
-            DownloadState = downloadstate;
-            Labels = new ReadOnlyCollection<string>(new List<string>(labels));
-            Size = size;
-            Remaining = remaining;
-            Uploaded = uploaded;
+            this.manager = manager;
+            this.info = info;
+
+            this.hash = info.Hash.Clone();
         }
+
+        public InfoHash Hash => hash;
+        public string Name => info.Name;
+        public int Priority => info.Priority;
+        public ActiveStates ActiveState => info.ActiveState;
+        public DownloadStates DownloadState => info.DownloadState;
+        public ReadOnlyCollection<string> Labels => info.Labels;
+        public ulong Size => info.Size;
+        public ulong Remaining => info.Remaining;
+        public ulong Uploaded => info.Uploaded;
     }
 }
