@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 namespace BitTorrent
 {
@@ -88,11 +89,43 @@ namespace BitTorrent
         public class LabelCollection : IEnumerable<string>
         {
             private Torrent torrent;
+            private IClient client => torrent.client;
             private string[] labels => torrent.info.Labels.ToArray();
 
             internal LabelCollection(Torrent torrent)
             {
                 this.torrent = torrent;
+            }
+
+            public bool Set(IEnumerable<string> labels)
+            {
+                return Set(labels.ToArray());
+            }
+            public bool Set(params string[] labels)
+            {
+                client.SetLabels(new InfoHash[] { torrent.hash }, labels);
+                torrent.manager.Update();
+
+                return ArraysEqual(labels, this.labels);
+            }
+
+            private static bool ArraysEqual<T>(T[] a1, T[] a2)
+            {
+                if (ReferenceEquals(a1, a2))
+                    return true;
+
+                if (a1 == null || a2 == null)
+                    return false;
+
+                if (a1.Length != a2.Length)
+                    return false;
+
+                EqualityComparer<T> comparer = EqualityComparer<T>.Default;
+                for (int i = 0; i < a1.Length; i++)
+                {
+                    if (!comparer.Equals(a1[i], a2[i])) return false;
+                }
+                return true;
             }
 
             public IEnumerator<string> GetEnumerator()
