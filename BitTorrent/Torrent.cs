@@ -5,6 +5,10 @@ using System.Collections.ObjectModel;
 
 namespace BitTorrent
 {
+    /// <summary>
+    /// Represents a torrent that is managed by a <see cref="TorrentManager"/>.
+    /// The specifics of a torrent can be updated by calling <see cref="TorrentManager.Update"/>, which will update all the <see cref="Torrent"/>s it manages.
+    /// </summary>
     public class Torrent
     {
         private TorrentManager manager;
@@ -50,6 +54,22 @@ namespace BitTorrent
                 throw new InvalidOperationException($"A deleted {nameof(Torrent)} cannot be updated.");
 
             this.info = info;
+        }
+
+        /// <summary>
+        /// Deletes this <see cref="Torrent"/> on the torrent server.
+        /// </summary>
+        /// <param name="deleteData">if set to <c>true</c> the data associated with this <see cref="Torrent"/> is deleted with the torrent; otherwise, it will remain on disc.</param>
+        /// <returns><c>true</c>, if this <see cref="Torrent"/> was deleted succesfully.</returns>
+        public bool Delete(bool deleteData)
+        {
+            if (!deleted)
+            {
+                manager.Client.RemoveTorrent(hash, deleteData).Wait();
+                manager.Update();
+            }
+
+            return deleted;
         }
 
         public InfoHash Hash => hash;
