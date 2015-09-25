@@ -97,6 +97,20 @@ namespace BitTorrent
                 this.torrent = torrent;
             }
 
+            public bool Add(params string[] labels)
+            {
+                return Set(this.labels.Concat(labels));
+            }
+            public bool Remove(params string[] labels)
+            {
+                List<string> list = new List<string>(this.labels);
+
+                foreach (var l in labels)
+                    list.Remove(l);
+
+                return Set(list);
+            }
+
             public bool Set(IEnumerable<string> labels)
             {
                 return Set(labels.ToArray());
