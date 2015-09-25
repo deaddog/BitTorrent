@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace BitTorrent
 {
-    public class InfoHash : IEquatable<InfoHash>
+    public class InfoHash : IEquatable<InfoHash>, ICloneable
     {
         static Dictionary<char, byte> base32DecodeTable;
 
@@ -48,6 +48,9 @@ namespace BitTorrent
 
             this.hash = hash;
         }
+
+        object ICloneable.Clone() => Clone();
+        public InfoHash Clone() => new InfoHash(hash);
 
         public static InfoHash FromStream(Stream stream)
         {
@@ -132,14 +135,8 @@ namespace BitTorrent
                 return sha1.ComputeHash(stream);
         }
 
-        public static bool operator ==(InfoHash a, InfoHash b)
-        {
-            return a.Equals(b);
-        }
-        public static bool operator !=(InfoHash a, InfoHash b)
-        {
-            return !a.Equals(b);
-        }
+        public static bool operator ==(InfoHash a, InfoHash b) => a.Equals(b);
+        public static bool operator !=(InfoHash a, InfoHash b) => !a.Equals(b);
 
         public override bool Equals(object obj)
         {
@@ -157,9 +154,6 @@ namespace BitTorrent
         {
             return hash.GetHashCode();
         }
-        public override string ToString()
-        {
-            return hash;
-        }
+        public override string ToString() => $"{{ Hash: {hash}}}";
     }
 }
