@@ -79,7 +79,15 @@ namespace BitTorrent
         public InfoHash Hash => hash;
         public string Name => info.Name;
         public int Priority => info.Priority;
-        public ActiveStates ActiveState => info.ActiveState;
+        public ActiveStates ActiveState
+        {
+            get { return info.ActiveState; }
+            set
+            {
+                client.SetState(new InfoHash[] { hash }, value).Wait();
+                manager.Update();
+            }
+        }
         public DownloadStates DownloadState => info.DownloadState;
         public LabelCollection Labels => labels;
         public ulong Size => info.Size;
