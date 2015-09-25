@@ -93,6 +93,9 @@ namespace BitTorrent
         public ulong Size => info.Size;
         public ulong Remaining => info.Remaining;
         public ulong Uploaded => info.Uploaded;
+        public ulong Downloaded => info.Size - info.Remaining;
+        public double Progress => (double)Downloaded / (double)Size;
+        public double Ratio => (double)Uploaded / (double)Downloaded;
 
         public class LabelCollection : IEnumerable<string>
         {
