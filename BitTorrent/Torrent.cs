@@ -12,6 +12,7 @@ namespace BitTorrent
     public class Torrent
     {
         private TorrentManager manager;
+        private IClient client => manager.Client;
         private bool deleted;
 
         private readonly InfoHash hash;
@@ -65,7 +66,7 @@ namespace BitTorrent
         {
             if (!deleted)
             {
-                manager.Client.RemoveTorrent(hash, deleteData).Wait();
+                client.RemoveTorrent(hash, deleteData).Wait();
                 manager.Update();
             }
 
