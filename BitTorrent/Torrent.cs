@@ -26,6 +26,19 @@ namespace BitTorrent
             this.hash = info.Hash.Clone();
         }
 
+        /// <summary>
+        /// Updates the torrent information describing this <see cref="Torrent"/>.
+        /// NOTE: This method should only be invoked from the managing <see cref="TorrentManager"/>.
+        /// </summary>
+        /// <param name="info">The new torrent information.</param>
+        internal void ManagerUpdate(TorrentInfo info)
+        {
+            if (!info.Hash.Equals(hash))
+                throw new ArgumentException($"{nameof(Torrent)} updates can only be performed using the same hash value.", nameof(info));
+
+            this.info = info;
+        }
+
         public InfoHash Hash => hash;
         public string Name => info.Name;
         public int Priority => info.Priority;
