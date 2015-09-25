@@ -1,7 +1,7 @@
 ﻿using BitTorrent.API;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace BitTorrent
 {
@@ -17,6 +17,7 @@ namespace BitTorrent
 
         private readonly InfoHash hash;
         private TorrentInfo info;
+        private LabelCollection labels;
 
         internal Torrent(TorrentManager manager, TorrentInfo info)
         {
@@ -29,6 +30,7 @@ namespace BitTorrent
             this.deleted = false;
             this.manager = manager;
             this.info = info;
+            this.labels = new LabelCollection(this);
 
             this.hash = info.Hash.Clone();
         }
@@ -78,9 +80,29 @@ namespace BitTorrent
         public int Priority => info.Priority;
         public ActiveStates ActiveState => info.ActiveState;
         public DownloadStates DownloadState => info.DownloadState;
-        public ReadOnlyCollection<string> Labels => info.Labels;
+        public LabelCollection Labels => labels;
         public ulong Size => info.Size;
         public ulong Remaining => info.Remaining;
         public ulong Uploaded => info.Uploaded;
+
+        public class LabelCollection : IEnumerable<string>
+        {
+            private Torrent torrent;
+            private string[] labels => torrent.info.Labels.ToArray();
+
+            internal LabelCollection(Torrent torrent)
+            {
+                this.torrent = torrent;
+            }
+
+            public IEnumerator<string> GetEnumerator()
+            {
+                return ((IEnumerable<string>)labels).GetEnumerator();
+            }
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return ((IEnumerable<string>)labels).GetEnumerator();
+            }
+        }
     }
 }
