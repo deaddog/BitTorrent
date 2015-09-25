@@ -8,6 +8,7 @@ namespace BitTorrent
     public class Torrent
     {
         private TorrentManager manager;
+        private bool deleted;
 
         private readonly InfoHash hash;
         private TorrentInfo info;
@@ -20,12 +21,22 @@ namespace BitTorrent
             if (info == null)
                 throw new ArgumentNullException(nameof(info));
 
+            this.deleted = false;
             this.manager = manager;
             this.info = info;
 
             this.hash = info.Hash.Clone();
         }
 
+        /// <summary>
+        /// Marks the torrent as deleted and clears its <see cref="TorrentManager"/> reference.
+        /// NOTE: This method should only be invoked from the managing <see cref="TorrentManager"/>.
+        /// </summary>
+        internal void ManagerDelete()
+        {
+            this.manager = null;
+            this.deleted = true;
+        }
         /// <summary>
         /// Updates the torrent information describing this <see cref="Torrent"/>.
         /// NOTE: This method should only be invoked from the managing <see cref="TorrentManager"/>.
@@ -35,6 +46,8 @@ namespace BitTorrent
         {
             if (!info.Hash.Equals(hash))
                 throw new ArgumentException($"{nameof(Torrent)} updates can only be performed using the same hash value.", nameof(info));
+            if (deleted)
+                throw new InvalidOperationException($"A deleted {nameof(Torrent)} cannot be updated.");
 
             this.info = info;
         }
