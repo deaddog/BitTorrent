@@ -14,7 +14,6 @@ namespace BitTorrent.API
     {
         public const string POSTURL = "/command/";
 
-
         #region RequestHandler
 
         private class qRequestHandler : RequestHandler
@@ -78,7 +77,7 @@ namespace BitTorrent.API
             req = new qRequestHandler(server, port, username, password);
         }
 
-        public async Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null)
+        public async Task AddFromTorrentFile(string filepath, string downloadPath = null)
         {
             string tempPath = null;
             if (downloadPath != null)
@@ -91,17 +90,8 @@ namespace BitTorrent.API
 
             if (downloadPath != null)
                 await setPath(tempPath);
-
-            InfoHash hash = InfoHash.FromFile(filepath);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return true;
-
-            return false;
         }
-        public async Task<bool> AddFromMagnet(string magneturl, string downloadPath = null)
+        public async Task AddFromMagnet(string magneturl, string downloadPath = null)
         {
             string tempPath = null;
             if (downloadPath != null)
@@ -114,15 +104,6 @@ namespace BitTorrent.API
 
             if (downloadPath != null)
                 await setPath(tempPath);
-
-            InfoHash hash = InfoHash.FromMagnetLink(magneturl);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return true;
-
-            return false;
         }
 
         private async Task uploadTorrentFile(string filepath)
@@ -163,18 +144,11 @@ namespace BitTorrent.API
             await req.Post<string>("/command/setPreferences", s, ContentTypes.URL_Encoded);
         }
 
-        public async Task<bool> RemoveTorrent(InfoHash hash, bool removeData)
+        public async Task RemoveTorrent(InfoHash hash, bool removeData)
         {
             string url = removeData ? "/command/deletePerm" : "/command/delete";
 
             var data = await req.Post<string>(url, "hashes=" + hash.Hash, ContentTypes.URL_Encoded);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return false;
-
-            return true;
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
@@ -264,16 +238,16 @@ namespace BitTorrent.API
         private const string QBDOWNLOADING = "downloading";
         private const string QBSTALLEDDL = "stalledDL";
 
-        public async Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
+        public async Task SetLabels(IEnumerable<InfoHash> torrents, string[] labels)
         {
             throw new NotImplementedException();
         }
-        public async Task<bool> SetLabelsAll(string[] labels)
+        public async Task SetLabelsAll(string[] labels)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> SetPriority(IEnumerable<InfoHash> torrents, Priorities priority)
+        public async Task SetPriority(IEnumerable<InfoHash> torrents, Priorities priority)
         {
             string url = getPriorityUrl(priority);
 
@@ -287,13 +261,10 @@ namespace BitTorrent.API
             }
 
             await req.Post(url, $"hashes={sb.ToString()}");
-
-
-            return true;
         }
 
 
-        public async Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
+        public async Task SetState(IEnumerable<InfoHash> torrents, ActiveStates state)
         {
             foreach (InfoHash torrentHash in torrents)
             {
@@ -301,17 +272,13 @@ namespace BitTorrent.API
 
                 var response = await req.Post<JObject>(url, $"hash={torrentHash.ToString()}");
             }
-
-            return true;
         }
 
-        public async Task<bool> SetStateAll(ActiveStates state)
+        public async Task SetStateAll(ActiveStates state)
         {
             string url = getStateAllUrl(state);
 
             await req.Post(url);
-
-            return true;
         }
 
 
