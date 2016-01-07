@@ -5,18 +5,18 @@ namespace BitTorrent.API
 {
     public interface IClient
     {
-        Task<bool> AddFromMagnet(string magneturl, string downloadPath = null);
-        Task<bool> AddFromTorrentFile(string filepath, string downloadPath = null);
+        Task AddFromMagnet(string magneturl, string downloadPath = null);
+        Task AddFromTorrentFile(string filepath, string downloadPath = null);
 
-        Task<bool> RemoveTorrent(InfoHash hash, bool removeData);
+        Task RemoveTorrent(InfoHash hash, bool removeData);
         Task<TorrentInfo[]> ListTorrents();
 
-        Task<bool> SetState(IEnumerable<InfoHash> torrents, ActiveStates state);
-        Task<bool> SetStateAll(ActiveStates state);
+        Task SetState(IEnumerable<InfoHash> torrents, ActiveStates state);
+        Task SetStateAll(ActiveStates state);
 
-        Task<bool> SetLabels(IEnumerable<InfoHash> torrents, string[] labels);
-        Task<bool> SetLabelsAll(string[] labels);
+        Task SetLabels(IEnumerable<InfoHash> torrents, string[] labels);
+        Task SetLabelsAll(string[] labels);
 
-        Task<bool> SetPriority(IEnumerable<InfoHash> torrents, Priorities priority);
+        Task SetPriority(IEnumerable<InfoHash> torrents, Priorities priority);
     }
 }
