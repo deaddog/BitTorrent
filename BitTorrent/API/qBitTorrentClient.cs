@@ -286,9 +286,6 @@ namespace BitTorrent.API
             }
 
             await req.Post(url, $"hashes={sb.ToString()}");
-
-
-            return true;
         }
 
 
@@ -300,8 +297,6 @@ namespace BitTorrent.API
 
                 var response = await req.Post<JObject>(url, $"hash={torrentHash.ToString()}");
             }
-
-            return true;
         }
 
         public async Task SetStateAll(ActiveStates state)
@@ -309,8 +304,6 @@ namespace BitTorrent.API
             string url = getStateAllUrl(state);
 
             await req.Post(url);
-
-            return true;
         }
 
 
