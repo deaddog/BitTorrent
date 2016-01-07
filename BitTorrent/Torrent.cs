@@ -108,6 +108,14 @@ namespace BitTorrent
                 this.torrent = torrent;
             }
 
+            public bool Contains(string label, bool caseSensitive = false)
+            {
+                foreach (var l in labels)
+                    if (l.Equals(label, caseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase))
+                        return true;
+                return false;
+            }
+
             public bool Add(params string[] labels)
             {
                 return Set(this.labels.Concat(labels));
