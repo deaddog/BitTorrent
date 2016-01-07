@@ -90,15 +90,6 @@ namespace BitTorrent.API
 
             if (downloadPath != null)
                 await setPath(tempPath);
-
-            InfoHash hash = InfoHash.FromFile(filepath);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return true;
-
-            return false;
         }
         public async Task AddFromMagnet(string magneturl, string downloadPath = null)
         {
@@ -113,15 +104,6 @@ namespace BitTorrent.API
 
             if (downloadPath != null)
                 await setPath(tempPath);
-
-            InfoHash hash = InfoHash.FromMagnetLink(magneturl);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return true;
-
-            return false;
         }
 
         private async Task uploadTorrentFile(string filepath)
@@ -167,13 +149,6 @@ namespace BitTorrent.API
             string url = removeData ? "/command/deletePerm" : "/command/delete";
 
             var data = await req.Post<string>(url, "hashes=" + hash.Hash, ContentTypes.URL_Encoded);
-
-            var files = await ListTorrents();
-            for (int i = 0; i < files.Length; i++)
-                if (files[i].Hash.Equals(hash))
-                    return false;
-
-            return true;
         }
         public async Task<TorrentInfo[]> ListTorrents()
         {
