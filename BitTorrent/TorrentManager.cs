@@ -1,6 +1,7 @@
 ﻿using BitTorrent.API;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace BitTorrent
 {
@@ -62,6 +63,41 @@ namespace BitTorrent
                     return torrents[i];
 
             return null;
+        }
+        public Torrent Add(TorrentLink link, string downloadpath = null)
+        {
+            switch (link.LinkType)
+            {
+                case LinkType.Magnet:
+                    client.AddFromMagnet(link.Path, downloadpath).Wait();
+                    var hash = InfoHash.FromMagnetLink(link.Path);
+
+                    Update();
+
+                    for (int i = 0; i < torrents.Count; i++)
+                        if (torrents[i].Hash.Equals(hash))
+                            return torrents[i];
+
+                    return null;
+
+                case LinkType.LocalFile:
+                    return addFromFile(link.Path, downloadpath);
+
+                case LinkType.OnlineFile:
+                    var file = Path.GetTempFileName();
+
+                    using (System.Net.WebClient client = new System.Net.WebClient())
+                        client.DownloadFile(link.Path, file);
+
+                    var torrent = addFromFile(file, downloadpath);
+
+                    File.Delete(file);
+
+                    return torrent;
+
+                default:
+                    throw new InvalidOperationException("Unknown link type: " + link.LinkType);
+            }
         }
     }
 }
