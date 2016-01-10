@@ -49,5 +49,19 @@ namespace BitTorrent
                 torrents.Remove(t);
             }
         }
+
+        private Torrent addFromFile(string filepath, string downloadpath)
+        {
+            client.AddFromTorrentFile(filepath, downloadpath).Wait();
+            var hash = InfoHash.FromFile(filepath);
+
+            Update();
+
+            for (int i = 0; i < torrents.Count; i++)
+                if (torrents[i].Hash.Equals(hash))
+                    return torrents[i];
+
+            return null;
+        }
     }
 }
