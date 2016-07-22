@@ -57,8 +57,12 @@
     <Compile Include="Bencoding\PeekStream.cs" />
     <Compile Include="DownloadStates.cs" />
     <Compile Include="InfoHash.cs" />
+    <Compile Include="LinkType.cs" />
+    <Compile Include="TorrentLink.cs" />
     <Compile Include="Priorities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Torrent.cs" />
+    <Compile Include="TorrentManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\API\API.csproj">
