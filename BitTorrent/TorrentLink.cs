@@ -4,8 +4,8 @@ namespace BitTorrent
 {
     public class TorrentLink
     {
-        private string path;
-        private LinkType linkType;
+        private readonly string path;
+        private readonly LinkType linkType;
 
         private TorrentLink(string path, LinkType linkType)
         {
@@ -24,10 +24,25 @@ namespace BitTorrent
         }
         public static TorrentLink FromLocal(string filepath)
         {
-            return new TorrentLink(filepath, LinkType.Magnet);
+            return new TorrentLink(filepath, LinkType.LocalFile);
         }
 
-        internal string Path => path;
+        public string Path => path;
         public LinkType LinkType => linkType;
+
+        private static string typeToString(LinkType type)
+        {
+            switch (type)
+            {
+                case LinkType.Magnet:return "magnet";
+                case LinkType.OnlineFile:return "online";
+                case LinkType.LocalFile:return "local";
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type));
+            }
+        }
+
+        public override string ToString() => path + "@" + typeToString(linkType);
     }
 }
