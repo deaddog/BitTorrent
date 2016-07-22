@@ -102,6 +102,11 @@ namespace BitTorrent
             }
         }
 
+        public int Count => torrents.Count;
+
+        public Torrent this[int index] => torrents[index];
+        public Torrent this[InfoHash hash] => torrents.Find(x => x.Hash.Equals(hash));
+
         public IEnumerator<Torrent> GetEnumerator()
         {
             Update();
