@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Collections;
+using System.Linq;
 
 namespace BitTorrent
 {
-    public class TorrentManager
+    public class TorrentManager : IEnumerable<Torrent>
     {
         private IClient client;
         internal IClient Client => client;
@@ -98,6 +100,36 @@ namespace BitTorrent
                 default:
                     throw new InvalidOperationException("Unknown link type: " + link.LinkType);
             }
+        }
+
+        public IEnumerator<Torrent> GetEnumerator()
+        {
+            Update();
+            return new Enumerator(torrents);
+        }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            Update();
+            return new Enumerator(torrents);
+        }
+
+        private class Enumerator : IEnumerator<Torrent>
+        {
+            private int index = -1;
+            private readonly Torrent[] torrents;
+
+            public Enumerator(IEnumerable<Torrent> torrents)
+            {
+                this.torrents = torrents.ToArray();
+            }
+
+            public Torrent Current => torrents[index];
+            object IEnumerator.Current => torrents[index];
+
+            public void Dispose() { }
+
+            public bool MoveNext() => ++index < torrents.Length;
+            public void Reset() => index = -1;
         }
     }
 }
