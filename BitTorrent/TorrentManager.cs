@@ -23,12 +23,6 @@ namespace BitTorrent
             this.torrents = new List<Torrent>();
         }
 
-        public Torrent[] GetTorrents()
-        {
-            Update();
-            return torrents.ToArray();
-        }
-
         public void Update()
         {
             var info = client.ListTorrents().Result;
